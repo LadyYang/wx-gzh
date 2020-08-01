@@ -3,27 +3,42 @@
  * @Author: chtao
  * @Email: 1763615252@qq.com
  * @Date: 2020-07-26 20:45:01
- * @LastEditTime: 2020-07-29 07:30:36
+ * @LastEditTime: 2020-08-01 16:14:29
  * @LastEditors: chtao
- * @FilePath: \zwdownload\server\wechat\index.ts
+ * @FilePath: \wx-gzh\index.ts
  */
 
 import crypto from 'crypto';
 import Axios from 'axios';
 
 import { responseText } from './lib/response';
-import { createMenu } from './lib/gzh.menu';
+import { createMenu } from './lib/menu';
 import { getQRCode } from './lib/code';
 import Observe from './lib/Observe';
+import { createH5Pay, createJSAPIPay } from './lib/pay';
 
 export default class WeChat extends Observe {
-  private appID: string;
+  public readonly appID: string;
 
-  private appsecret: string;
+  public readonly appsecret: string;
 
   private _token!: string;
 
   private path: string;
+
+  /** 商户账号参数 */
+  public payOptions?: {
+    /** 微信支付商户号 */
+    mch_id: string;
+
+    /** 通知地址 */
+    notify_url: string;
+
+    client_ip: string;
+
+    /** API密钥 */
+    key: string;
+  };
 
   /** 微信网页开发时需要的 ticket */
   public ticket?: string;
@@ -179,4 +194,8 @@ export default class WeChat extends Observe {
   useMiddleware = this._useMiddleware.bind(this);
 
   getQRCode = getQRCode;
+
+  createH5Pay = createH5Pay;
+
+  createJSAPIPay = createJSAPIPay;
 }
