@@ -4,7 +4,7 @@
  * @Github: https://github.com/LadyYang
  * @Email: 1763615252@qq.com
  * @Date: 2020-07-26 20:45:01
- * @LastEditTime: 2020-08-01 23:37:45
+ * @LastEditTime: 2020-08-02 06:45:57
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\index.ts
  */
@@ -90,12 +90,7 @@ export default class WeChat extends Observe {
   set token(val: string) {
     this._token = val;
 
-    this.emit('ready', {
-      ToUserName: '',
-      FromUserName: ',',
-      MsgType: '',
-      CreateTime: 1,
-    });
+    this.emit('ready', val);
   }
 
   /** 开启 web 开发，用户获取 ticket */
@@ -209,7 +204,7 @@ export default class WeChat extends Observe {
     }
 
     if (xml.return_code === 'FAIL') {
-      await this.emit('payFail', xml);
+      await this.emit('payFail', undefined);
       responsePay(ctx);
     }
   }
