@@ -5,12 +5,12 @@
  * @Github: https://github.com/LadyYang
  * @Date: 2020-06-18 23:24:38
  * @LastEditors: chtao
- * @LastEditTime: 2020-08-01 16:13:31
- * @FilePath: \wx-gzh\lib\pay.service.ts
+ * @LastEditTime: 2020-08-01 23:04:34
+ * @FilePath: \wx-gzh\lib\pay.ts
  */
 
 import crypto from 'crypto';
-import Axios from 'axios';
+
 import { parseString } from 'xml2js';
 import { promisify } from 'util';
 import WeChat from '..';
@@ -137,7 +137,11 @@ async function order(
       out_trade_no,
     })}</sign></xml>`;
   try {
-    const result = (await Axios.post(url, formData)).data;
+    const result = await (
+      await fetch(url, { body: formData, method: 'POST' })
+    ).json();
+
+    console.log('result: ', result);
 
     return await ps(result);
   } catch (err) {
@@ -145,7 +149,7 @@ async function order(
   }
 }
 
-export async function createJSAPIPay(
+export async function createJSAPIPayOrder(
   this: WeChat,
   options: {
     payType: string;
@@ -167,7 +171,7 @@ export async function createJSAPIPay(
   });
 }
 
-export async function createH5Pay(
+export async function createH5PayOrder(
   this: WeChat,
   options: {
     payType: string;

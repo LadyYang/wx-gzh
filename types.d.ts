@@ -125,6 +125,61 @@ interface PostLocationEvent extends PushEvent {
   Precision: string;
 }
 
+interface PaySuccessEvent {
+  return_code: 'SUCCESS' | 'FAIL';
+  return_msg?: string;
+
+  /** 小程序ID */
+  appid: string;
+
+  /** 商户号 */
+  mch_id: string;
+
+  /** 设备号	 */
+  device_info: string;
+
+  /** 随机字符串 */
+  nonce_str: string;
+
+  sign: string;
+
+  /** 签名类型 */
+  sign_type?: string;
+
+  result_code: 'SUCCESS' | 'FAIL';
+
+  err_code?: string;
+  err_code_des?: string;
+
+  openid: string;
+
+  is_subscribe: string;
+
+  /** 交易类型 */
+  trade_type: string;
+  bank_type: string;
+  total_fee: number;
+
+  /** 应结订单金额 */
+  settlement_total_fee?: number;
+
+  fee_type?: string;
+
+  /** 现金支付金额 */
+  cash_fee: string;
+
+  /** 现金支付货币类型 */
+  cash_fee_type?: string;
+
+  transaction_id: string;
+
+  out_trade_no: string;
+
+  attach?: string;
+
+  time_end: string;
+}
+
 export interface WeChatEvent {
   /** 文本信息 */
   text: (event: TextEvent) => Promise<string>;
@@ -137,7 +192,7 @@ export interface WeChatEvent {
 
   location: (event: LocationEvent) => Promise<string>;
 
-  post_location: (
+  postLocation: (
     event: PostLocationEvent,
     ctx: { body: any }
   ) => Promise<string>;
@@ -161,4 +216,8 @@ export interface WeChatEvent {
   ready: (token: string) => Promise<string>;
 
   unknow: (event: MenuEvent) => Promise<string>;
+
+  paySuccess: (event: PaySuccessEvent) => Promise<string>;
+
+  payFail: () => Promise<string>;
 }

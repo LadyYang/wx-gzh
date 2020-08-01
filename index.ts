@@ -3,19 +3,19 @@
  * @Author: chtao
  * @Email: 1763615252@qq.com
  * @Date: 2020-07-26 20:45:01
- * @LastEditTime: 2020-08-01 16:14:29
+ * @LastEditTime: 2020-08-01 22:57:35
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\index.ts
  */
 
 import crypto from 'crypto';
-import Axios from 'axios';
 
 import { responseText } from './lib/response';
 import { createMenu } from './lib/menu';
 import { getQRCode } from './lib/code';
 import Observe from './lib/Observe';
-import { createH5Pay, createJSAPIPay } from './lib/pay';
+import { createH5PayOrder, createJSAPIPayOrder } from './lib/pay';
+import { PaySuccessEvent } from './types';
 
 export default class WeChat extends Observe {
   public readonly appID: string;
@@ -116,12 +116,11 @@ export default class WeChat extends Observe {
    */
   private async getWechatAccessToken() {
     try {
-      const result = (
-        await Axios.get(
-          `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${this.appID}&secret=${this.appsecret}`,
-          { responseType: 'json' }
+      const result = await (
+        await fetch(
+          `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${this.appID}&secret=${this.appsecret}`
         )
-      ).data;
+      ).json();
 
       this.token = result.access_token;
 
@@ -136,11 +135,11 @@ export default class WeChat extends Observe {
 
   private async getWeChatTicket() {
     try {
-      const result = (
-        await Axios.get(
+      const result = await (
+        await fetch(
           `https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${this.token}&type=jsapi`
         )
-      ).data;
+      ).json();
 
       this.ticket = result.ticket;
 
@@ -153,12 +152,8 @@ export default class WeChat extends Observe {
     }
   }
 
-  async _useMiddleware(ctx: any, next: any) {
-    const xml: any = ctx.request.body.xml;
-
-    if (!ctx.originalUrl.includes(this.path)) {
-      return await next();
-    }
+  private async dealGZHEvent(ctx: any) {
+    const { xml } = ctx.request.body;
 
     for (let key in xml) {
       xml[key] = xml[key][0];
@@ -191,11 +186,31 @@ export default class WeChat extends Observe {
     }
   }
 
+  private async dealPayEvent(ctx: any) {
+    const { xml }: { xml: PaySuccessEvent } = ctx.request.body;
+
+    if (xml.return_code === 'SUCCESS') this.emit('paySuccess', xml);
+
+    if (xml.return_code === 'FAIL') this.emit('payFail', xml);
+  }
+
+  async _useMiddleware(ctx: any, next: any) {
+    if (ctx.originalUrl.includes(this.path)) {
+      return await this.dealGZHEvent(ctx);
+    }
+
+    if (ctx.originalUrl.includes(this.payOptions?.notify_url)) {
+      return await this.dealPayEvent(ctx);
+    }
+
+    await next();
+  }
+
   useMiddleware = this._useMiddleware.bind(this);
 
   getQRCode = getQRCode;
 
-  createH5Pay = createH5Pay;
+  createH5PayOrder = createH5PayOrder;
 
-  createJSAPIPay = createJSAPIPay;
+  createJSAPIPayOrder = createJSAPIPayOrder;
 }

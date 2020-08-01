@@ -3,13 +3,11 @@
  * @Author: chtao
  * @Email: 1763615252@qq.com
  * @Date: 2020-07-26 19:22:26
- * @LastEditTime: 2020-07-27 23:29:23
+ * @LastEditTime: 2020-08-01 23:02:45
  * @LastEditors: chtao
- * @FilePath: \zwdownload\server\wechat\lib\code.ts
+ * @FilePath: \wx-gzh\lib\code.ts
  */
 
-import { v4 as uuid } from 'uuid';
-import Axios from 'axios';
 import WeChat from '..';
 
 /**
@@ -19,8 +17,7 @@ import WeChat from '..';
  */
 export async function getQRCode(this: WeChat, time: number = 2592000) {
   try {
-    const scene_id =
-      uuid().split('-').join('') + Math.random().toString(36).substr(2, 10);
+    const scene_id = Math.random().toString(36).substr(2, 10);
 
     const data = {
       expire_seconds: time,
@@ -30,18 +27,19 @@ export async function getQRCode(this: WeChat, time: number = 2592000) {
 
     const content = JSON.stringify(data);
 
-    const result = (
-      await Axios.post(
+    const result = await (
+      await fetch(
         `https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=${this.token}`,
-        data,
         {
+          method: 'POST',
+          body: data as any,
           headers: {
             'Content-Type': 'application/json',
-            'Content-Length': content.length,
+            'Content-Length': content.length + '',
           },
         }
       )
-    ).data;
+    ).json();
 
     return {
       url:

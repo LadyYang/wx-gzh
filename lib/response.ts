@@ -104,3 +104,10 @@ export function responseVideo(
 // </Video>
 // </xml>`;
 // }
+
+export function responsePay(ctx: any) {
+  ctx.body = `<xml>
+  <return_code><![CDATA[SUCCESS]]></return_code>
+  <return_msg><![CDATA[OK]]></return_msg>
+  </xml>`;
+}

@@ -3,12 +3,12 @@
  * @Author: chtao
  * @Email: 1763615252@qq.com
  * @Date: 2020-07-28 20:13:47
- * @LastEditTime: 2020-07-29 07:21:53
+ * @LastEditTime: 2020-08-01 22:38:52
  * @LastEditors: chtao
- * @FilePath: \zwdownload\server\wechat\lib\Observe.ts
+ * @FilePath: \wx-gzh\lib\Observe.ts
  */
 
-import { WeChatEvent, BaseEvent } from '../types';
+import { WeChatEvent, BaseEvent, PaySuccessEvent } from '../types';
 
 export default class Observe {
   private listeners = new Map();
@@ -51,7 +51,7 @@ export default class Observe {
     return this;
   }
 
-  async emit(event: keyof WeChatEvent, e: BaseEvent) {
+  async emit(event: keyof WeChatEvent, e: BaseEvent | PaySuccessEvent) {
     const funsArr: Function[] = this.listeners.get(event);
 
     if (funsArr) {
