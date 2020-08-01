@@ -3,7 +3,7 @@
  * @Author: chtao
  * @Email: 1763615252@qq.com
  * @Date: 2020-07-26 20:45:01
- * @LastEditTime: 2020-08-01 22:57:35
+ * @LastEditTime: 2020-08-01 23:27:30
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\index.ts
  */
@@ -49,6 +49,18 @@ export default class WeChat extends Observe {
       appsecret: string;
       menuData: object;
       routePath: string;
+      payOptions?: {
+        /** 微信支付商户号 */
+        mch_id: string;
+
+        /** 通知地址 */
+        notify_url: string;
+
+        client_ip: string;
+
+        /** API密钥 */
+        key: string;
+      };
     },
     web: boolean = false
   ) {
@@ -56,6 +68,7 @@ export default class WeChat extends Observe {
     this.appID = options.appID;
     this.appsecret = options.appsecret;
     this.path = options.routePath;
+    this.payOptions = options.payOptions;
 
     // 获取 token
     this.getWechatAccessToken();
