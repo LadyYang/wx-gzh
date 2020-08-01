@@ -1,16 +1,17 @@
 /*
- * @Description: 出口
+ * @Description:
  * @Author: chtao
+ * @Github: https://github.com/LadyYang
  * @Email: 1763615252@qq.com
  * @Date: 2020-07-26 20:45:01
- * @LastEditTime: 2020-08-01 23:27:30
+ * @LastEditTime: 2020-08-01 23:37:45
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\index.ts
  */
 
 import crypto from 'crypto';
 
-import { responseText } from './lib/response';
+import { responseText, responsePay } from './lib/response';
 import { createMenu } from './lib/menu';
 import { getQRCode } from './lib/code';
 import Observe from './lib/Observe';
@@ -202,9 +203,15 @@ export default class WeChat extends Observe {
   private async dealPayEvent(ctx: any) {
     const { xml }: { xml: PaySuccessEvent } = ctx.request.body;
 
-    if (xml.return_code === 'SUCCESS') this.emit('paySuccess', xml);
+    if (xml.return_code === 'SUCCESS') {
+      await this.emit('paySuccess', xml);
+      responsePay(ctx);
+    }
 
-    if (xml.return_code === 'FAIL') this.emit('payFail', xml);
+    if (xml.return_code === 'FAIL') {
+      await this.emit('payFail', xml);
+      responsePay(ctx);
+    }
   }
 
   async _useMiddleware(ctx: any, next: any) {

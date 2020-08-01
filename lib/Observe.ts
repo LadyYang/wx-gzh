@@ -3,7 +3,7 @@
  * @Author: chtao
  * @Email: 1763615252@qq.com
  * @Date: 2020-07-28 20:13:47
- * @LastEditTime: 2020-08-01 22:38:52
+ * @LastEditTime: 2020-08-01 23:34:54
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\lib\Observe.ts
  */
@@ -15,7 +15,7 @@ export default class Observe {
 
   addListener(
     event: keyof WeChatEvent,
-    listener: (e: BaseEvent) => Promise<string>
+    listener: (e: BaseEvent | PaySuccessEvent) => Promise<string>
   ): this {
     const funsArr: Function[] = this.listeners.get(event);
     if (funsArr) {
