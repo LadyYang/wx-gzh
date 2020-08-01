@@ -3,12 +3,13 @@
  * @Author: chtao
  * @Email: 1763615252@qq.com
  * @Date: 2020-07-26 19:22:26
- * @LastEditTime: 2020-08-01 23:02:45
+ * @LastEditTime: 2020-08-02 07:38:13
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\lib\code.ts
  */
 
 import WeChat from '..';
+import { post } from '../utils';
 
 /**
  * 生成带参数的临时二维码图片
@@ -25,21 +26,10 @@ export async function getQRCode(this: WeChat, time: number = 2592000) {
       action_info: { scene: { scene_str: scene_id } },
     };
 
-    const content = JSON.stringify(data);
-
-    const result = await (
-      await fetch(
-        `https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=${this.token}`,
-        {
-          method: 'POST',
-          body: data as any,
-          headers: {
-            'Content-Type': 'application/json',
-            'Content-Length': content.length + '',
-          },
-        }
-      )
-    ).json();
+    const result: any = await post(
+      `https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=${this.token}`,
+      data
+    );
 
     return {
       url:
@@ -49,7 +39,7 @@ export async function getQRCode(this: WeChat, time: number = 2592000) {
         new Date().getTime(),
       scene_id,
     };
-  } catch (err) {
-    throw err;
+  } catch (e) {
+    throw e;
   }
 }

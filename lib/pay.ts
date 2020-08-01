@@ -5,7 +5,7 @@
  * @Github: https://github.com/LadyYang
  * @Date: 2020-06-18 23:24:38
  * @LastEditors: chtao
- * @LastEditTime: 2020-08-01 23:04:34
+ * @LastEditTime: 2020-08-02 07:38:49
  * @FilePath: \wx-gzh\lib\pay.ts
  */
 
@@ -14,6 +14,9 @@ import crypto from 'crypto';
 import { parseString } from 'xml2js';
 import { promisify } from 'util';
 import WeChat from '..';
+
+import { request } from 'https';
+import { post } from '../utils';
 
 const ps = promisify(parseString);
 
@@ -137,9 +140,7 @@ async function order(
       out_trade_no,
     })}</sign></xml>`;
   try {
-    const result = await (
-      await fetch(url, { body: formData, method: 'POST' })
-    ).json();
+    const result: any = await post(url, formData);
 
     console.log('result: ', result);
 

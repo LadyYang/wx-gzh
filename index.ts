@@ -4,7 +4,7 @@
  * @Github: https://github.com/LadyYang
  * @Email: 1763615252@qq.com
  * @Date: 2020-07-26 20:45:01
- * @LastEditTime: 2020-08-02 06:45:57
+ * @LastEditTime: 2020-08-02 07:41:19
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\index.ts
  */
@@ -17,6 +17,7 @@ import { getQRCode } from './lib/code';
 import Observe from './lib/Observe';
 import { createH5PayOrder, createJSAPIPayOrder } from './lib/pay';
 import { PaySuccessEvent } from './types';
+import { post, get } from './utils';
 
 export default class WeChat extends Observe {
   public readonly appID: string;
@@ -125,11 +126,9 @@ export default class WeChat extends Observe {
    */
   private async getWechatAccessToken() {
     try {
-      const result = await (
-        await fetch(
-          `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${this.appID}&secret=${this.appsecret}`
-        )
-      ).json();
+      const result: any = await get(
+        `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${this.appID}&secret=${this.appsecret}`
+      );
 
       this.token = result.access_token;
 
@@ -144,11 +143,9 @@ export default class WeChat extends Observe {
 
   private async getWeChatTicket() {
     try {
-      const result = await (
-        await fetch(
-          `https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${this.token}&type=jsapi`
-        )
-      ).json();
+      const result: any = await get(
+        `https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${this.token}&type=jsapi`
+      );
 
       this.ticket = result.ticket;
 
