@@ -1,9 +1,10 @@
 /*
  * @Description: 观察者模式
  * @Author: chtao
+ * @Github: https://github.com/LadyYang
  * @Email: 1763615252@qq.com
- * @Date: 2020-07-28 20:13:47
- * @LastEditTime: 2020-08-01 23:34:54
+ * @Date: 2020-08-02 00:05:35
+ * @LastEditTime: 2020-08-02 06:34:49
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\lib\Observe.ts
  */
@@ -13,15 +14,15 @@ import { WeChatEvent, BaseEvent, PaySuccessEvent } from '../types';
 export default class Observe {
   private listeners = new Map();
 
-  addListener(
-    event: keyof WeChatEvent,
-    listener: (e: BaseEvent | PaySuccessEvent) => Promise<string>
+  addListener<T extends keyof WeChatEvent>(
+    type: T,
+    listener: WeChatEvent[T]
   ): this {
-    const funsArr: Function[] = this.listeners.get(event);
+    const funsArr: Function[] = this.listeners.get(type);
     if (funsArr) {
-      this.listeners.set(event, funsArr.push(listener));
+      this.listeners.set(type, funsArr.push(listener));
     } else {
-      this.listeners.set(event, [listener]);
+      this.listeners.set(type, [listener]);
     }
 
     return this;
@@ -29,11 +30,11 @@ export default class Observe {
 
   on = this.addListener;
 
-  removeListener(
-    event: keyof WeChatEvent,
-    listener: (e: BaseEvent) => void
+  removeListener<T extends keyof WeChatEvent>(
+    type: T,
+    listener: WeChatEvent[T]
   ): this {
-    const funsArr: Function[] = this.listeners.get(event);
+    const funsArr: Function[] = this.listeners.get(type);
 
     if (funsArr) {
       const newArr = funsArr.filter(fun => fun !== listener);
@@ -45,14 +46,17 @@ export default class Observe {
 
   off = this.removeListener;
 
-  removeAllListeners(event?: keyof WeChatEvent): this {
-    this.listeners.set(event, null);
+  removeAllListeners(type: keyof WeChatEvent): this {
+    this.listeners.set(type, null);
 
     return this;
   }
 
-  async emit(event: keyof WeChatEvent, e: BaseEvent | PaySuccessEvent) {
-    const funsArr: Function[] = this.listeners.get(event);
+  async emit<T extends keyof WeChatEvent>(
+    type: T,
+    e: Parameters<WeChatEvent[T]>[0]
+  ) {
+    const funsArr: Function[] = this.listeners.get(type);
 
     if (funsArr) {
       const result = funsArr.map(async fun => await fun(e));

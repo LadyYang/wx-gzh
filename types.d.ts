@@ -1,3 +1,5 @@
+import Observe from './lib/Observe';
+
 export interface BaseEvent {
   ToUserName: string;
   FromUserName: string;
@@ -217,7 +219,7 @@ export interface WeChatEvent {
 
   unknow: (event: MenuEvent) => Promise<string>;
 
-  paySuccess: (event: PaySuccessEvent) => Promise<string>;
+  paySuccess: (event: PaySuccessEvent) => Promise<void>;
 
-  payFail: () => Promise<string>;
+  payFail: () => Promise<void>;
 }
