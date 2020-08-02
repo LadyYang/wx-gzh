@@ -5,8 +5,8 @@
  * @Github: https://github.com/LadyYang
  * @Date: 2020-05-27 13:11:26
  * @LastEditors: chtao
- * @LastEditTime: 2020-07-27 23:59:33
- * @FilePath: \zwdownload\server\wechat\lib\gzh.menu.ts
+ * @LastEditTime: 2020-08-02 10:01:07
+ * @FilePath: \wx-gzh\lib\menu.ts
  */
 
 import https from 'https';
@@ -54,5 +54,7 @@ export async function createMenu(this: WeChat, data: object) {
 
     req.write(content);
     req.end();
+
+    req.on('error', e => reject(e));
   });
 }

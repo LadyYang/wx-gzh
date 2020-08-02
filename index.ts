@@ -4,7 +4,7 @@
  * @Github: https://github.com/LadyYang
  * @Email: 1763615252@qq.com
  * @Date: 2020-07-26 20:45:01
- * @LastEditTime: 2020-08-02 09:41:06
+ * @LastEditTime: 2020-08-02 10:25:30
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\index.ts
  */
@@ -77,12 +77,16 @@ export default class WeChat extends Observe {
     this.payOptions = options.payOptions;
 
     (async () => {
-      // 获取 token
-      await this.getWechatAccessToken();
+      try {
+        // 获取 token
+        await this.getWechatAccessToken();
 
-      createMenu.call(this, options.menuData);
+        await createMenu.call(this, options.menuData);
 
-      web && (await this.getWeChatTicket());
+        web && (await this.getWeChatTicket());
+      } catch (e) {
+        this.emit('error', e);
+      }
     })();
 
     if (instance) {
@@ -109,23 +113,19 @@ export default class WeChat extends Observe {
 
   /** 验证微信接口 */
   public async auth(this: WeChat, ctx: any) {
-    try {
-      const { signature, timestamp, nonce, echostr } = ctx.request.query;
-      const authStr = [this.token, timestamp, nonce].sort().join('');
-      const hashStr = crypto
-        .createHash('sha1')
-        .update(authStr, 'utf8')
-        .digest('hex');
+    const { signature, timestamp, nonce, echostr } = ctx.request.query;
+    const authStr = [this.token, timestamp, nonce].sort().join('');
+    const hashStr = crypto
+      .createHash('sha1')
+      .update(authStr, 'utf8')
+      .digest('hex');
 
-      if (hashStr === signature) {
-        ctx.body = echostr;
-      } else {
-        ctx.body = {
-          message: '微信回调认证失败',
-        };
-      }
-    } catch (err) {
-      throw err;
+    if (hashStr === signature) {
+      ctx.body = echostr;
+    } else {
+      ctx.body = {
+        message: '微信回调认证失败',
+      };
     }
   }
 
@@ -133,37 +133,37 @@ export default class WeChat extends Observe {
    * 获取 access_token
    */
   private async getWechatAccessToken() {
-    try {
-      const result: any = await get(
-        `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${this.appID}&secret=${this.appsecret}`
-      );
+    const result: any = await get(
+      `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${this.appID}&secret=${this.appsecret}`
+    );
 
-      this.token = result.access_token;
-
-      setTimeout(
-        this.getWechatAccessToken.bind(this),
-        (result.expires_in - 1200) * 1000
-      );
-    } catch (err) {
-      console.log(err);
+    if (result.errmsg) {
+      throw Error(JSON.stringify(result));
     }
+
+    this.token = result.access_token;
+
+    setTimeout(
+      this.getWechatAccessToken.bind(this),
+      (result.expires_in - 1200) * 1000
+    );
   }
 
   private async getWeChatTicket() {
-    try {
-      const result: any = await get(
-        `https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${this.token}&type=jsapi`
-      );
+    const result: any = await get(
+      `https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${this.token}&type=jsapi`
+    );
 
-      this.ticket = result.ticket;
+    this.ticket = result.ticket;
 
-      setTimeout(
-        this.getWeChatTicket.bind(this),
-        (result.expires_in - 1200) * 1000
-      );
-    } catch (err) {
-      console.log(err);
-    }
+    // if (result.errcode !== 0) {
+    //   throw new Error(result);
+    // }
+
+    setTimeout(
+      this.getWeChatTicket.bind(this),
+      (result.expires_in - 1200) * 1000
+    );
   }
 
   private async dealGZHEvent(ctx: any) {

@@ -222,4 +222,6 @@ export interface WeChatEvent {
   paySuccess: (event: PaySuccessEvent) => Promise<void>;
 
   payFail: () => Promise<void>;
+
+  error: (msg: any) => void;
 }

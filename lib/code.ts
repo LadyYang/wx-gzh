@@ -3,7 +3,7 @@
  * @Author: chtao
  * @Email: 1763615252@qq.com
  * @Date: 2020-07-26 19:22:26
- * @LastEditTime: 2020-08-02 08:48:25
+ * @LastEditTime: 2020-08-02 10:21:35
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\lib\code.ts
  */
@@ -17,29 +17,25 @@ import { post } from '../utils';
  * @param time 过期时间  默认为最大值 2592000(s) 30 天
  */
 export async function getQRCode(this: WeChat, time: number = 2592000) {
-  try {
-    const scene_id = Math.random().toString(36).substr(2, 10);
+  const scene_id = Math.random().toString(36).substr(2, 10);
 
-    const data = {
-      expire_seconds: time,
-      action_name: 'QR_STR_SCENE',
-      action_info: { scene: { scene_str: scene_id } },
-    };
+  const data = {
+    expire_seconds: time,
+    action_name: 'QR_STR_SCENE',
+    action_info: { scene: { scene_str: scene_id } },
+  };
 
-    const result: any = await post(
-      `https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=${this.token}`,
-      data
-    );
+  const result: any = await post(
+    `https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=${this.token}`,
+    data
+  );
 
-    return {
-      url:
-        'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' +
-        result.ticket +
-        '&t=' +
-        new Date().getTime(),
-      scene_id,
-    };
-  } catch (e) {
-    throw e;
-  }
+  return {
+    url:
+      'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=' +
+      result.ticket +
+      '&t=' +
+      new Date().getTime(),
+    scene_id,
+  };
 }
