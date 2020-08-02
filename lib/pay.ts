@@ -5,7 +5,7 @@
  * @Github: https://github.com/LadyYang
  * @Date: 2020-06-18 23:24:38
  * @LastEditors: chtao
- * @LastEditTime: 2020-08-02 10:21:51
+ * @LastEditTime: 2020-08-02 10:37:40
  * @FilePath: \wx-gzh\lib\pay.ts
  */
 
@@ -15,7 +15,6 @@ import { parseString } from 'xml2js';
 import { promisify } from 'util';
 import WeChat from '..';
 
-import { request } from 'https';
 import { post } from '../utils';
 
 const ps = promisify(parseString);
@@ -141,7 +140,7 @@ async function order(
     })}</sign></xml>`;
 
   const result: any = await post(url, formData);
-
+  console.log(result, 101001);
   return await ps(result);
 }
 
