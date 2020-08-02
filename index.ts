@@ -4,7 +4,7 @@
  * @Github: https://github.com/LadyYang
  * @Email: 1763615252@qq.com
  * @Date: 2020-07-26 20:45:01
- * @LastEditTime: 2020-08-02 09:11:44
+ * @LastEditTime: 2020-08-02 09:41:06
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\index.ts
  */
@@ -76,16 +76,14 @@ export default class WeChat extends Observe {
     this.path = options.routePath;
     this.payOptions = options.payOptions;
 
-    // 获取 token
-    this.getWechatAccessToken();
+    (async () => {
+      // 获取 token
+      await this.getWechatAccessToken();
 
-    web && this.getWeChatTicket();
-
-    this.on('ready', async () => {
       createMenu.call(this, options.menuData);
 
-      return '';
-    });
+      web && (await this.getWeChatTicket());
+    })();
 
     if (instance) {
       return instance;

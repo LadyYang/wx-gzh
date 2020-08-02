@@ -215,7 +215,7 @@ export interface WeChatEvent {
   view: (event: MenuEvent) => Promise<string>;
 
   /** token is ok */
-  ready: (token: string) => Promise<string>;
+  ready: (token: string) => Promise<void>;
 
   unknow: (event: MenuEvent) => Promise<string>;
 
