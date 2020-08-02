@@ -5,11 +5,12 @@
  * @Github: https://github.com/LadyYang
  * @Date: 2020-06-05 15:58:35
  * @LastEditors: chtao
- * @LastEditTime: 2020-06-11 06:26:59
- * @FilePath: /server/services/wechat/sdk.ts
+ * @LastEditTime: 2020-08-02 09:07:01
+ * @FilePath: \wx-gzh\lib\sdk.ts
  */
 
 import crypto from 'crypto';
+import WeChat from '..';
 
 function sha1(str: string) {
   return crypto.createHash('sha1').update(str, 'utf8').digest('hex');
@@ -50,20 +51,16 @@ function raw(args: any) {
 /**
  * JS-SDK使用权限签名算法 获取 signature
  */
-export default function getSignature(
-  href: string,
-  ticket: string,
-  appID: string
-) {
+export default function getSignature(this: WeChat, href: string) {
   var ret: any = {
-    jsapi_ticket: ticket,
+    jsapi_ticket: this.ticket,
     nonceStr: createNonceStr(),
     timestamp: createTimestamp(),
     url: href,
   };
 
   ret.signature = sha1(raw(ret));
-  ret.appId = appID;
+  ret.appId = this.appID;
 
   return ret;
 }
