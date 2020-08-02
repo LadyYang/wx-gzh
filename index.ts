@@ -4,7 +4,7 @@
  * @Github: https://github.com/LadyYang
  * @Email: 1763615252@qq.com
  * @Date: 2020-07-26 20:45:01
- * @LastEditTime: 2020-08-02 13:44:25
+ * @LastEditTime: 2020-08-02 14:35:19
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\index.ts
  */
@@ -218,9 +218,14 @@ export default class WeChat extends Observe {
 
   async _useMiddleware(ctx: any, next: any) {
     try {
-      if (ctx.href.includes(this.path)) {
+      if (ctx.href.includes(this.path) && /^(POST)$/i.test(ctx.method)) {
         console.log('dealGZHEvent: ');
         return await this.dealGZHEvent(ctx);
+      }
+
+      // 验证
+      if (ctx.href.includes(this.path) && /^(GET)$/i.test(ctx.method)) {
+        return await this.auth(ctx);
       }
 
       if (ctx.href.includes(this.payOptions?.notify_url)) {
