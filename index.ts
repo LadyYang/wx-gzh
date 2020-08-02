@@ -4,7 +4,7 @@
  * @Github: https://github.com/LadyYang
  * @Email: 1763615252@qq.com
  * @Date: 2020-07-26 20:45:01
- * @LastEditTime: 2020-08-02 10:25:30
+ * @LastEditTime: 2020-08-02 11:29:52
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\index.ts
  */
@@ -217,15 +217,19 @@ export default class WeChat extends Observe {
   }
 
   async _useMiddleware(ctx: any, next: any) {
-    if (ctx.originalUrl.includes(this.path)) {
-      return await this.dealGZHEvent(ctx);
-    }
+    try {
+      if (ctx.originalUrl.includes(this.path)) {
+        return await this.dealGZHEvent(ctx);
+      }
 
-    if (ctx.originalUrl.includes(this.payOptions?.notify_url)) {
-      return await this.dealPayEvent(ctx);
-    }
+      if (ctx.originalUrl.includes(this.payOptions?.notify_url)) {
+        return await this.dealPayEvent(ctx);
+      }
 
-    await next();
+      await next();
+    } catch (e) {
+      this.emit('error', e);
+    }
   }
 
   useMiddleware = this._useMiddleware.bind(this);
