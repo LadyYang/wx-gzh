@@ -4,12 +4,13 @@
  * @Github: https://github.com/LadyYang
  * @Email: 1763615252@qq.com
  * @Date: 2020-07-26 20:45:01
- * @LastEditTime: 2020-08-02 15:11:52
+ * @LastEditTime: 2020-08-02 15:38:21
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\index.ts
  */
 
 import crypto from 'crypto';
+import { parseStringPromise } from 'xml2js';
 
 import { responseText, responsePay } from './lib/response';
 import { createMenu } from './lib/menu';
@@ -223,8 +224,21 @@ export default class WeChat extends Observe {
   async _useMiddleware(ctx: any, next: any) {
     try {
       if (ctx.href.includes(this.path) && /^(POST)$/i.test(ctx.method)) {
-        console.log('dealGZHEvent: ');
-        return await this.dealGZHEvent(ctx);
+        return new Promise((resolve, reject) => {
+          console.log('dealGZHEvent: ');
+
+          let result = '';
+          ctx.req.on('data', (chunk: any) => (result += chunk));
+
+          ctx.req.on('end', async () => {
+            const res = await parseStringPromise(result);
+            ctx.request.body.xml = res.xml;
+            await this.dealGZHEvent(ctx);
+            resolve();
+          });
+
+          ctx.req.on('error', (e: any) => reject(e));
+        });
       }
 
       // 验证
