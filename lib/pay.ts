@@ -5,7 +5,7 @@
  * @Github: https://github.com/LadyYang
  * @Date: 2020-06-18 23:24:38
  * @LastEditors: chtao
- * @LastEditTime: 2020-08-02 10:48:46
+ * @LastEditTime: 2020-08-02 10:53:12
  * @FilePath: \wx-gzh\lib\pay.ts
  */
 
@@ -184,7 +184,7 @@ export async function createH5PayOrder(
     attach,
     body: options.payType,
     total_fee: options.price,
-    trade_type: 'MWEB',
+    trade_type: 'JSAPI',
   });
 
   if (
