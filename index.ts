@@ -4,7 +4,7 @@
  * @Github: https://github.com/LadyYang
  * @Email: 1763615252@qq.com
  * @Date: 2020-07-26 20:45:01
- * @LastEditTime: 2020-08-02 08:49:35
+ * @LastEditTime: 2020-08-02 09:11:44
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\index.ts
  */
@@ -18,6 +18,7 @@ import Observe from './lib/Observe';
 import { createH5PayOrder, createJSAPIPayOrder } from './lib/pay';
 import { PaySuccessEvent } from './types';
 import { get } from './utils';
+import getSignature from './lib/sdk';
 
 let instance: WeChat | null = null;
 
@@ -236,4 +237,6 @@ export default class WeChat extends Observe {
   createH5PayOrder = createH5PayOrder;
 
   createJSAPIPayOrder = createJSAPIPayOrder;
+
+  getSignature = getSignature;
 }
