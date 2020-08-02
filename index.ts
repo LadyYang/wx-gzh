@@ -4,7 +4,7 @@
  * @Github: https://github.com/LadyYang
  * @Email: 1763615252@qq.com
  * @Date: 2020-07-26 20:45:01
- * @LastEditTime: 2020-08-02 14:35:19
+ * @LastEditTime: 2020-08-02 14:40:35
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\index.ts
  */
@@ -225,6 +225,7 @@ export default class WeChat extends Observe {
 
       // 验证
       if (ctx.href.includes(this.path) && /^(GET)$/i.test(ctx.method)) {
+        console.log('auth');
         return await this.auth(ctx);
       }
 
