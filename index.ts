@@ -4,7 +4,7 @@
  * @Github: https://github.com/LadyYang
  * @Email: 1763615252@qq.com
  * @Date: 2020-07-26 20:45:01
- * @LastEditTime: 2020-08-02 12:47:34
+ * @LastEditTime: 2020-08-02 13:44:25
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\index.ts
  */
@@ -237,6 +237,7 @@ export default class WeChat extends Observe {
 
       await next();
     } catch (e) {
+      responseText(ctx.request.body.xml, 'error', ctx);
       this.emit('error', e);
     }
   }
