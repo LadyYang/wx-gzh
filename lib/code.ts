@@ -26,7 +26,7 @@ export async function getQRCode(this: WeChat, time: number = 2592000) {
   };
 
   const result: any = await post(
-    `https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=${this.token}`,
+    `https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=${this.accessToken}`,
     data
   );
 

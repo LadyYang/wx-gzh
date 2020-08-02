@@ -4,7 +4,7 @@
  * @Github: https://github.com/LadyYang
  * @Email: 1763615252@qq.com
  * @Date: 2020-07-26 20:45:01
- * @LastEditTime: 2020-08-02 14:40:35
+ * @LastEditTime: 2020-08-02 15:11:52
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\index.ts
  */
@@ -27,7 +27,9 @@ export default class WeChat extends Observe {
 
   public appsecret: string;
 
-  private _token!: string;
+  private _accessToken!: string;
+
+  private authToken: string;
 
   private path: string;
 
@@ -51,6 +53,7 @@ export default class WeChat extends Observe {
   constructor(
     options: {
       appID: string;
+      token: string;
       appsecret: string;
       menuData: object;
       routePath: string;
@@ -71,6 +74,7 @@ export default class WeChat extends Observe {
   ) {
     super();
 
+    this.authToken = options.token;
     this.appID = options.appID;
     this.appsecret = options.appsecret;
     this.path = options.routePath;
@@ -96,12 +100,12 @@ export default class WeChat extends Observe {
     instance = this;
   }
 
-  get token() {
-    return this._token;
+  get accessToken() {
+    return this._accessToken;
   }
 
-  set token(val: string) {
-    this._token = val;
+  set accessToken(val: string) {
+    this._accessToken = val;
 
     this.emit('ready', val);
   }
@@ -114,7 +118,7 @@ export default class WeChat extends Observe {
   /** 验证微信接口 */
   public async auth(this: WeChat, ctx: any) {
     const { signature, timestamp, nonce, echostr } = ctx.request.query;
-    const authStr = [this.token, timestamp, nonce].sort().join('');
+    const authStr = [this.authToken, timestamp, nonce].sort().join('');
     const hashStr = crypto
       .createHash('sha1')
       .update(authStr, 'utf8')
@@ -141,7 +145,7 @@ export default class WeChat extends Observe {
       throw Error(JSON.stringify(result));
     }
 
-    this.token = result.access_token;
+    this.accessToken = result.access_token;
 
     setTimeout(
       this.getWechatAccessToken.bind(this),
@@ -151,7 +155,7 @@ export default class WeChat extends Observe {
 
   private async getWeChatTicket() {
     const result: any = await get(
-      `https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${this.token}&type=jsapi`
+      `https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${this.accessToken}&type=jsapi`
     );
 
     this.ticket = result.ticket;

@@ -5,7 +5,7 @@
  * @Github: https://github.com/LadyYang
  * @Date: 2020-05-27 13:11:26
  * @LastEditors: chtao
- * @LastEditTime: 2020-08-02 10:01:07
+ * @LastEditTime: 2020-08-02 15:10:04
  * @FilePath: \wx-gzh\lib\menu.ts
  */
 
@@ -16,7 +16,8 @@ export async function createMenu(this: WeChat, data: object) {
   console.log('进入函数createMenu开始创建新菜单');
 
   const url =
-    'https://api.weixin.qq.com/cgi-bin/menu/create?access_token=' + this.token;
+    'https://api.weixin.qq.com/cgi-bin/menu/create?access_token=' +
+    this.accessToken;
 
   const content = JSON.stringify(data);
 
