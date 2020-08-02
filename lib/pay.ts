@@ -5,7 +5,7 @@
  * @Github: https://github.com/LadyYang
  * @Date: 2020-06-18 23:24:38
  * @LastEditors: chtao
- * @LastEditTime: 2020-08-02 16:48:19
+ * @LastEditTime: 2020-08-02 17:02:03
  * @FilePath: \wx-gzh\lib\pay.ts
  */
 
@@ -139,8 +139,8 @@ async function order(
       out_trade_no,
     })}</sign></xml>`;
 
-  const result: any = await post(url, formData);
-  console.log(result, ' pay ');
+  const result: any = await post(url, formData, false);
+
   return await ps(result);
 }
 
@@ -211,13 +211,6 @@ export async function createH5PayOrder(
       paySign: paySign,
     };
   } else {
-    return {
-      appId: this.appID,
-      timestamp: '',
-      nonceStr: '',
-      package: '',
-      signType: '',
-      paySign: '',
-    };
+    throw JSON.stringify(orderResult);
   }
 }

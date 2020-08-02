@@ -4,16 +4,15 @@
  * @Github: https://github.com/LadyYang
  * @Email: 1763615252@qq.com
  * @Date: 2020-08-02 07:30:31
- * @LastEditTime: 2020-08-02 16:51:09
+ * @LastEditTime: 2020-08-02 16:59:32
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\utils\index.ts
  */
 
 import { request } from 'https';
 
-export const post = (url: string, body: any) => {
+export const post = (url: string, body: string, json = true) => {
   return new Promise((resolve, reject) => {
-    body = JSON.stringify(body);
     const req = request(
       url,
       {
@@ -29,10 +28,10 @@ export const post = (url: string, body: any) => {
 
         res.on('end', () => {
           try {
-            result = JSON.parse(result);
+            if (json) result = JSON.parse(result);
             resolve(result);
           } catch (e) {
-            resolve(result);
+            reject(e);
           }
         });
 
@@ -48,7 +47,7 @@ export const post = (url: string, body: any) => {
   });
 };
 
-export const get = (url: string) => {
+export const get = (url: string, responseJSON = true) => {
   return new Promise((resolve, reject) => {
     const req = request(url, res => {
       let result = '';
@@ -56,7 +55,7 @@ export const get = (url: string) => {
 
       res.on('end', () => {
         try {
-          result = JSON.parse(result);
+          if (responseJSON) result = JSON.parse(result);
           resolve(result);
         } catch (e) {
           reject(e);

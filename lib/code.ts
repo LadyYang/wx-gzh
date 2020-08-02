@@ -3,7 +3,7 @@
  * @Author: chtao
  * @Email: 1763615252@qq.com
  * @Date: 2020-07-26 19:22:26
- * @LastEditTime: 2020-08-02 11:29:39
+ * @LastEditTime: 2020-08-02 16:58:02
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\lib\code.ts
  */
@@ -27,7 +27,7 @@ export async function getQRCode(this: WeChat, time: number = 2592000) {
 
   const result: any = await post(
     `https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=${this.accessToken}`,
-    data
+    JSON.stringify(data)
   );
 
   return {
