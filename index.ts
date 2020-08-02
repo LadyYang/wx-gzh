@@ -4,7 +4,7 @@
  * @Github: https://github.com/LadyYang
  * @Email: 1763615252@qq.com
  * @Date: 2020-07-26 20:45:01
- * @LastEditTime: 2020-08-02 16:45:31
+ * @LastEditTime: 2020-08-02 19:44:21
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\index.ts
  */
@@ -17,7 +17,6 @@ import { createMenu } from './lib/menu';
 import { getQRCode } from './lib/code';
 import Observe from './lib/Observe';
 import { createH5PayOrder, createJSAPIPayOrder } from './lib/pay';
-import { PaySuccessEvent } from './types';
 import { get } from './utils';
 import getSignature from './lib/sdk';
 

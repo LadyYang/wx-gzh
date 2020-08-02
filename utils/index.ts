@@ -4,23 +4,30 @@
  * @Github: https://github.com/LadyYang
  * @Email: 1763615252@qq.com
  * @Date: 2020-08-02 07:30:31
- * @LastEditTime: 2020-08-02 16:59:32
+ * @LastEditTime: 2020-08-02 19:46:03
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\utils\index.ts
  */
 
 import { request } from 'https';
 
-export const post = (url: string, body: string, json = true) => {
+export const post = (url: string, body: any, responseJSON = true) => {
+  let headers = {};
+
+  if (typeof body === 'object') {
+    body = JSON.stringify(body);
+    headers = {
+      'Content-Type': 'application/json',
+      'Content-Length': body.length,
+    };
+  }
+
   return new Promise((resolve, reject) => {
     const req = request(
       url,
       {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': body.length,
-        },
+        headers,
       },
       res => {
         let result = '';
@@ -28,7 +35,7 @@ export const post = (url: string, body: string, json = true) => {
 
         res.on('end', () => {
           try {
-            if (json) result = JSON.parse(result);
+            if (responseJSON) result = JSON.parse(result);
             resolve(result);
           } catch (e) {
             reject(e);
