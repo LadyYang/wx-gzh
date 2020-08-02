@@ -4,7 +4,7 @@
  * @Github: https://github.com/LadyYang
  * @Email: 1763615252@qq.com
  * @Date: 2020-07-26 20:45:01
- * @LastEditTime: 2020-08-02 15:51:07
+ * @LastEditTime: 2020-08-02 15:58:24
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\index.ts
  */
@@ -231,20 +231,24 @@ export default class WeChat extends Observe {
           ctx.req.on('data', (chunk: any) => (result += chunk));
 
           ctx.req.on('end', async () => {
-            const res = await parseStringPromise(result);
+            try {
+              const res = await parseStringPromise(result);
 
-            if (!(ctx.request.body && typeof ctx.request.body === 'object')) {
-              ctx.request.body = {};
+              if (!(ctx.request.body && typeof ctx.request.body === 'object')) {
+                ctx.request.body = {};
+              }
+
+              console.log(res);
+
+              ctx.request.body.xml = res.xml;
+              await this.dealGZHEvent(ctx);
+              resolve();
+            } catch (e) {
+              this.emit('error', e);
             }
-
-            console.log(res);
-
-            ctx.request.body.xml = res.xml;
-            await this.dealGZHEvent(ctx);
-            resolve();
           });
 
-          ctx.req.on('error', (e: any) => reject(e));
+          ctx.req.on('error', (e: any) => this.emit('error', e));
         });
       }
 
