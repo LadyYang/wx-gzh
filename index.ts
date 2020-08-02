@@ -4,7 +4,7 @@
  * @Github: https://github.com/LadyYang
  * @Email: 1763615252@qq.com
  * @Date: 2020-07-26 20:45:01
- * @LastEditTime: 2020-08-02 07:41:19
+ * @LastEditTime: 2020-08-02 08:49:35
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\index.ts
  */
@@ -17,12 +17,14 @@ import { getQRCode } from './lib/code';
 import Observe from './lib/Observe';
 import { createH5PayOrder, createJSAPIPayOrder } from './lib/pay';
 import { PaySuccessEvent } from './types';
-import { post, get } from './utils';
+import { get } from './utils';
+
+let instance: WeChat | null = null;
 
 export default class WeChat extends Observe {
-  public readonly appID: string;
+  public appID: string;
 
-  public readonly appsecret: string;
+  public appsecret: string;
 
   private _token!: string;
 
@@ -67,6 +69,7 @@ export default class WeChat extends Observe {
     web: boolean = false
   ) {
     super();
+
     this.appID = options.appID;
     this.appsecret = options.appsecret;
     this.path = options.routePath;
@@ -82,6 +85,12 @@ export default class WeChat extends Observe {
 
       return '';
     });
+
+    if (instance) {
+      return instance;
+    }
+
+    instance = this;
   }
 
   get token() {
@@ -194,6 +203,8 @@ export default class WeChat extends Observe {
 
   private async dealPayEvent(ctx: any) {
     const { xml }: { xml: PaySuccessEvent } = ctx.request.body;
+
+    console.log('dealPayEvent', xml);
 
     if (xml.return_code === 'SUCCESS') {
       await this.emit('paySuccess', xml);

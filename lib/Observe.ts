@@ -4,12 +4,12 @@
  * @Github: https://github.com/LadyYang
  * @Email: 1763615252@qq.com
  * @Date: 2020-08-02 00:05:35
- * @LastEditTime: 2020-08-02 06:34:49
+ * @LastEditTime: 2020-08-02 08:29:07
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\lib\Observe.ts
  */
 
-import { WeChatEvent, BaseEvent, PaySuccessEvent } from '../types';
+import { WeChatEvent } from '../types';
 
 export default class Observe {
   private listeners = new Map();
