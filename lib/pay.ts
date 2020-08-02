@@ -5,7 +5,7 @@
  * @Github: https://github.com/LadyYang
  * @Date: 2020-06-18 23:24:38
  * @LastEditors: chtao
- * @LastEditTime: 2020-08-02 10:53:12
+ * @LastEditTime: 2020-08-02 16:32:45
  * @FilePath: \wx-gzh\lib\pay.ts
  */
 
@@ -140,7 +140,6 @@ async function order(
     })}</sign></xml>`;
 
   const result: any = await post(url, formData);
-  console.log(result, 101001);
   return await ps(result);
 }
 

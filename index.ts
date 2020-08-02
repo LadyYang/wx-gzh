@@ -4,7 +4,7 @@
  * @Github: https://github.com/LadyYang
  * @Email: 1763615252@qq.com
  * @Date: 2020-07-26 20:45:01
- * @LastEditTime: 2020-08-02 16:11:59
+ * @LastEditTime: 2020-08-02 16:32:24
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\index.ts
  */
@@ -224,9 +224,7 @@ export default class WeChat extends Observe {
   async _useMiddleware(ctx: any, next: any) {
     try {
       if (ctx.href.includes(this.path) && /^(POST)$/i.test(ctx.method)) {
-        return new Promise((resolve, reject) => {
-          console.log('dealGZHEvent: ');
-
+        return new Promise(resolve => {
           let result = '';
           ctx.req.on('data', (chunk: any) => (result += chunk));
 
@@ -237,8 +235,6 @@ export default class WeChat extends Observe {
               if (!(ctx.request.body && typeof ctx.request.body === 'object')) {
                 ctx.request.body = {};
               }
-
-              console.log(res);
 
               ctx.request.body.xml = res.xml;
               await this.dealGZHEvent(ctx);
@@ -256,21 +252,35 @@ export default class WeChat extends Observe {
 
       // 验证
       if (ctx.href.includes(this.path) && /^(GET)$/i.test(ctx.method)) {
-        console.log('auth');
         return await this.auth(ctx);
       }
 
       if (ctx.href.includes(this.payOptions?.notify_url)) {
-        console.log('dealPayEvent');
-        return await this.dealPayEvent(ctx);
-      }
+        return new Promise(resolve => {
+          let result = '';
+          ctx.req.on('data', (chunk: any) => (result += chunk));
 
-      console.log(
-        this.path,
-        this.payOptions?.notify_url,
-        ctx.originalUrl,
-        'pass'
-      );
+          ctx.req.on('end', async () => {
+            try {
+              const res = await parseStringPromise(result);
+
+              if (!(ctx.request.body && typeof ctx.request.body === 'object')) {
+                ctx.request.body = {};
+              }
+
+              ctx.request.body.xml = res.xml;
+              await this.dealPayEvent(ctx);
+              resolve();
+            } catch (e) {
+              this.emit('error', e);
+            }
+          });
+
+          ctx.req.on('aborted', (e: any) => this.emit('error', e));
+
+          ctx.req.on('error', (e: any) => this.emit('error', e));
+        });
+      }
 
       await next();
     } catch (e) {
