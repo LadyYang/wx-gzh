@@ -4,7 +4,7 @@
  * @Github: https://github.com/LadyYang
  * @Email: 1763615252@qq.com
  * @Date: 2020-07-26 20:45:01
- * @LastEditTime: 2020-08-02 16:32:24
+ * @LastEditTime: 2020-08-02 16:45:31
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\index.ts
  */
@@ -206,9 +206,11 @@ export default class WeChat extends Observe {
   }
 
   private async dealPayEvent(ctx: any) {
-    const { xml }: { xml: PaySuccessEvent } = ctx.request.body;
+    const { xml } = ctx.request.body;
 
-    console.log('dealPayEvent', xml);
+    for (let key in xml) {
+      xml[key] = xml[key][0];
+    }
 
     if (xml.return_code === 'SUCCESS') {
       await this.emit('paySuccess', xml);

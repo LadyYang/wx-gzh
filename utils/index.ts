@@ -4,7 +4,7 @@
  * @Github: https://github.com/LadyYang
  * @Email: 1763615252@qq.com
  * @Date: 2020-08-02 07:30:31
- * @LastEditTime: 2020-08-02 07:40:40
+ * @LastEditTime: 2020-08-02 16:51:09
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\utils\index.ts
  */
@@ -32,7 +32,7 @@ export const post = (url: string, body: any) => {
             result = JSON.parse(result);
             resolve(result);
           } catch (e) {
-            reject(e);
+            resolve(result);
           }
         });
 
