@@ -1,6 +1,6 @@
 {
   "name": "wx-gzh",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "微信工作号开发",
   "main": "dist/index.js",
   "scripts": {
