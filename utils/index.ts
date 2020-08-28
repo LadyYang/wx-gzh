@@ -4,14 +4,14 @@
  * @Github: https://github.com/LadyYang
  * @Email: 1763615252@qq.com
  * @Date: 2020-08-02 07:30:31
- * @LastEditTime: 2020-08-02 19:46:03
+ * @LastEditTime: 2020-08-03 14:05:32
  * @LastEditors: chtao
- * @FilePath: \wx-gzh\utils\index.ts
+ * @FilePath: \zwdownloadd:\Projects\wx-gzh\utils\index.ts
  */
 
 import { request } from 'https';
 
-export const post = (url: string, body: any, responseJSON = true) => {
+export const post = (url: string, body: any, responseJSON = true): any => {
   let headers = {};
 
   if (typeof body === 'object') {
@@ -54,7 +54,7 @@ export const post = (url: string, body: any, responseJSON = true) => {
   });
 };
 
-export const get = (url: string, responseJSON = true) => {
+export const get = (url: string, responseJSON = true): any => {
   return new Promise((resolve, reject) => {
     const req = request(url, res => {
       let result = '';

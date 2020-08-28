@@ -4,7 +4,7 @@
  * @Github: https://github.com/LadyYang
  * @Email: 1763615252@qq.com
  * @Date: 2020-07-26 20:45:01
- * @LastEditTime: 2020-08-02 19:44:21
+ * @LastEditTime: 2020-08-03 14:00:42
  * @LastEditors: chtao
  * @FilePath: \wx-gzh\index.ts
  */
@@ -110,29 +110,6 @@ export default class WeChat extends Observe {
     this.emit('ready', val);
   }
 
-  /** 开启 web 开发，用户获取 ticket */
-  public async openWeb() {
-    await this.getWeChatTicket();
-  }
-
-  /** 验证微信接口 */
-  public async auth(this: WeChat, ctx: any) {
-    const { signature, timestamp, nonce, echostr } = ctx.request.query;
-    const authStr = [this.authToken, timestamp, nonce].sort().join('');
-    const hashStr = crypto
-      .createHash('sha1')
-      .update(authStr, 'utf8')
-      .digest('hex');
-
-    if (hashStr === signature) {
-      ctx.body = echostr;
-    } else {
-      ctx.body = {
-        message: '微信回调认证失败',
-      };
-    }
-  }
-
   /**
    * 获取 access_token
    */
@@ -204,24 +181,6 @@ export default class WeChat extends Observe {
     }
   }
 
-  private async dealPayEvent(ctx: any) {
-    const { xml } = ctx.request.body;
-
-    for (let key in xml) {
-      xml[key] = xml[key][0];
-    }
-
-    if (xml.return_code === 'SUCCESS') {
-      await this.emit('paySuccess', xml);
-      responsePay(ctx);
-    }
-
-    if (xml.return_code === 'FAIL') {
-      await this.emit('payFail', undefined);
-      responsePay(ctx);
-    }
-  }
-
   async _useMiddleware(ctx: any, next: any) {
     try {
       if (ctx.href.includes(this.path) && /^(POST)$/i.test(ctx.method)) {
@@ -290,6 +249,24 @@ export default class WeChat extends Observe {
     }
   }
 
+  private async dealPayEvent(ctx: any) {
+    const { xml } = ctx.request.body;
+
+    for (let key in xml) {
+      xml[key] = xml[key][0];
+    }
+
+    if (xml.return_code === 'SUCCESS') {
+      await this.emit('paySuccess', xml);
+      responsePay(ctx);
+    }
+
+    if (xml.return_code === 'FAIL') {
+      await this.emit('payFail', undefined);
+      responsePay(ctx);
+    }
+  }
+
   useMiddleware = this._useMiddleware.bind(this);
 
   getQRCode = getQRCode;
@@ -299,4 +276,33 @@ export default class WeChat extends Observe {
   createJSAPIPayOrder = createJSAPIPayOrder;
 
   getSignature = getSignature;
+
+  /** 开启 web 开发，用户获取 ticket */
+  public async openWeb() {
+    await this.getWeChatTicket();
+  }
+
+  /** 验证微信接口 */
+  public async auth(ctx: any) {
+    const { signature, timestamp, nonce, echostr } = ctx.request.query;
+    const authStr = [this.authToken, timestamp, nonce].sort().join('');
+    const hashStr = crypto
+      .createHash('sha1')
+      .update(authStr, 'utf8')
+      .digest('hex');
+
+    if (hashStr === signature) {
+      ctx.body = echostr;
+    } else {
+      ctx.body = {
+        message: '微信回调认证失败',
+      };
+    }
+  }
+
+  public async getUserInfo(openid: string) {
+    return await get(
+      `https://api.weixin.qq.com/cgi-bin/user/info?access_token=${this.accessToken}&openid=${openid}&lang=zh_CN`
+    );
+  }
 }
